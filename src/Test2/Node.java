@@ -16,10 +16,10 @@ public abstract class Node extends JPanel implements MouseListener{
 	 */
 	private static final long serialVersionUID = 5095569851583415778L;
 	protected static Map<String, Node> allNodes = new HashMap<String, Node>();
-	private String id;
-	private Map<String , Node> children;
-	private Node parent;
-	private Rectangle bounds;
+	protected String id;
+	protected Map<String , Node> children;
+	protected Node parent;
+	protected Rectangle bounds;
 	
 	public Node(boolean clickable, String ID, Node theParent, Rectangle rect) {
 		super(null);
@@ -30,8 +30,16 @@ public abstract class Node extends JPanel implements MouseListener{
 		this.initChildren();
 		parent = theParent;
 		bounds = rect;
-		this.setBounds(bounds);
+		super.setBounds(bounds);
 		allNodes.put(id, this);
+	}
+	
+	public void setActive(boolean active)
+	{
+		if(parent != null || active == false)
+			removeChild(this);
+		else
+			addChild(this);
 	}
 	
 	public String getID(){
@@ -44,7 +52,14 @@ public abstract class Node extends JPanel implements MouseListener{
 	
 	protected abstract void initChildren();
 	
-	public void addChild(Node e){
+	public Node removeChild(Node e)
+	{
+		remove(e);
+		return children.remove(e.getID());
+	}
+	
+	public void addChild(Node e)
+	{
 		children.put(e.getID(), e);
 		this.add(e);
 	}
